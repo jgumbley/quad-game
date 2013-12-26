@@ -1,21 +1,16 @@
-import pyglet
+from pyglet import image, sprite, window, app
 
-CAPTION = "yo blair"
+quad = image.load('quad.bmp')
+quad_sprite = sprite.Sprite(quad)
 
-window = pyglet.window.Window()
+game_window = window.Window()
 
-label = pyglet.text.Label(CAPTION,
-                            font_name='Times New Roman',
-                            font_size=36,
-                            x=window.width//2, y=window.height//2,
-                            anchor_x='center', anchor_y='center')
 
-@window.event
+@game_window.event
 def on_draw():
-    window.clear()
-    label.draw()
+    game_window.clear()
+    quad_sprite.draw()
 
 
 if __name__ == "__main__":
-    pyglet.app.run()
-
+    app.run()
