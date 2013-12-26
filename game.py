@@ -22,18 +22,23 @@ class Quad(sprite.Sprite):
     """
     sprite_sheet = no_anti_alias(image.load('quad.bmp'))
 
+    STOP = 0
+    UP = 1
+
     def __init__(self, window, x, y, scale=1):
         image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
-        super(Quad, self).__init__(image_grid[1], x, y, batch=None)
+        super(Quad, self).__init__(image_grid[2], x, y, batch=None)
         self.scale = scale
         self.px = x
         self.py = y
+        self.move = self.STOP
 
     def update(self, dt):
-        self.px = self.x
-        self.py = self.y
-        self.x += self.x * 0.1 * dt
-        self.y += self.y * 0.1 * dt
+        if (self.move == self.STOP):
+            pass
+        elif (self.move == self.UP):
+            self.py = self.y
+            self.y += self.y * 0.5 * dt
 
 
 class GameWindow(window.Window):
@@ -58,6 +63,13 @@ class GameWindow(window.Window):
         self.clear()
         self.quad_sprite.draw()
 
+    def on_key_press(self, symbol, modifiers):
+        if (symbol == window.key.UP):
+            self.quad_sprite.move = Quad.UP
+
+    def on_key_release(self, symbol, modifiers):
+        if (symbol == window.key.UP):
+            self.quad_sprite.move = Quad.STOP
 
 if __name__ == "__main__":
     sys.exit(GameWindow())
