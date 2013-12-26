@@ -1,1 +1,2 @@
-pyglet
+hg+https://pyglet.googlecode.com/hg/
+pyobjc==2.2
