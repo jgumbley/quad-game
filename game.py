@@ -1,13 +1,12 @@
 import sys
 import random
-from pyglet import image, sprite, window, app
+from pyglet import image, sprite, window, app, clock
 from pyglet.gl import (
     glTexParameteri,
     glBindTexture,
     GL_TEXTURE_MAG_FILTER,
     GL_NEAREST
 )
-
 
 def no_anti_alias(image):
     texture = image.get_texture()
@@ -29,8 +28,12 @@ class Quad(sprite.Sprite):
         self.scale = scale
         self.px = x
         self.py = y
-        self.dx = (random.random() - 0.5) * 1000
-        self.dy = (random.random() - 0.5) * 1000
+
+    def update(self, dt):
+        self.px = self.x
+        self.py = self.y
+        self.x += self.x * 0.1 * dt
+        self.y += self.y * 0.1 * dt
 
 
 class GameWindow(window.Window):
@@ -40,8 +43,16 @@ class GameWindow(window.Window):
 
     def __init__(self):
         super(GameWindow, self).__init__()
+        clock.schedule_interval(self.update, 1.0/60)
+
         self.quad_sprite = Quad(self, 100, 100, scale=3)
         app.run()
+
+    def update(self, dt):
+        """
+        This is to update the game, not the drawing of the game
+        """
+        self.quad_sprite.update(dt)
 
     def on_draw(self):
         self.clear()
