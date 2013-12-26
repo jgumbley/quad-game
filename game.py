@@ -1,7 +1,8 @@
 from pyglet import image, sprite, window, app
 
 quad = image.load('quad.bmp')
-quad_sprite = sprite.Sprite(quad)
+quad_animation = image.ImageGrid(quad, 1, 8)
+quad_sprite = sprite.Sprite(quad_animation[1])
 
 game_window = window.Window()
 
