@@ -22,35 +22,34 @@ class Quad(sprite.Sprite):
     """
     sprite_sheet = no_anti_alias(image.load('quad.bmp'))
 
-    STOP = 0
-    UP = 1
-    DOWN = 2
-    LEFT = 3
-    RIGHT = 4
+    STOP = 9
+    UP = 2
+    DOWN = 6
+    LEFT = 4
+    RIGHT = 0
 
     def __init__(self, window, x, y, scale=1):
-        image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
-        super(Quad, self).__init__(image_grid[2], x, y, batch=None)
+        self.image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
+        super(Quad, self).__init__(self.image_grid[5], x, y, batch=None)
         self.scale = scale
         self.px = x
         self.py = y
         self.move = self.STOP
 
     def update(self, dt):
+        self.py = self.y
+        self.px = self.x
         if (self.move == self.STOP):
-            pass
+            return
         elif (self.move == self.UP):
-            self.py = self.y
-            self.y += self.y * 0.5 * dt
+            self.y += 100 * dt
         elif (self.move == self.DOWN):
-            self.py = self.y
-            self.y += self.y * -0.5 * dt
+            self.y -= 100 * dt
         elif (self.move == self.LEFT):
-            self.px = self.x
-            self.x += self.x * -0.5 * dt
+            self.x -= 100 * dt
         elif (self.move == self.RIGHT):
-            self.px = self.x
-            self.x += self.x * 0.5 * dt
+            self.x += 100 * dt
+        self.image = self.image_grid[self.move]
 
 
 class GameWindow(window.Window):
