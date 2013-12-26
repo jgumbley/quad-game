@@ -24,6 +24,9 @@ class Quad(sprite.Sprite):
 
     STOP = 0
     UP = 1
+    DOWN = 2
+    LEFT = 3
+    RIGHT = 4
 
     def __init__(self, window, x, y, scale=1):
         image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
@@ -39,6 +42,15 @@ class Quad(sprite.Sprite):
         elif (self.move == self.UP):
             self.py = self.y
             self.y += self.y * 0.5 * dt
+        elif (self.move == self.DOWN):
+            self.py = self.y
+            self.y += self.y * -0.5 * dt
+        elif (self.move == self.LEFT):
+            self.px = self.x
+            self.x += self.x * -0.5 * dt
+        elif (self.move == self.RIGHT):
+            self.px = self.x
+            self.x += self.x * 0.5 * dt
 
 
 class GameWindow(window.Window):
@@ -66,10 +78,15 @@ class GameWindow(window.Window):
     def on_key_press(self, symbol, modifiers):
         if (symbol == window.key.UP):
             self.quad_sprite.move = Quad.UP
+        elif (symbol == window.key.DOWN):
+            self.quad_sprite.move = Quad.DOWN
+        elif (symbol == window.key.LEFT):
+            self.quad_sprite.move = Quad.LEFT
+        elif (symbol == window.key.RIGHT):
+            self.quad_sprite.move = Quad.RIGHT
 
     def on_key_release(self, symbol, modifiers):
-        if (symbol == window.key.UP):
-            self.quad_sprite.move = Quad.STOP
+        self.quad_sprite.move = Quad.STOP
 
 if __name__ == "__main__":
     sys.exit(GameWindow())
