@@ -1,12 +1,13 @@
 import sys
-import random
 from pyglet import image, sprite, window, app, clock
 from pyglet.gl import (
+    glClearColor,
     glTexParameteri,
     glBindTexture,
     GL_TEXTURE_MAG_FILTER,
     GL_NEAREST
 )
+
 
 def no_anti_alias(image):
     texture = image.get_texture()
@@ -20,7 +21,7 @@ class Quad(sprite.Sprite):
     """
     This is a class for the Quad
     """
-    sprite_sheet = no_anti_alias(image.load('quad.bmp'))
+    sprite_sheet = no_anti_alias(image.load('quad.png'))
 
     STOP = 9
     UP = 2
@@ -52,16 +53,29 @@ class Quad(sprite.Sprite):
         self.image = self.image_grid[self.move]
 
 
+class Sand(sprite.Sprite):
+    """
+    This is a class for Sand
+    """
+    sand_image = no_anti_alias(image.load("sand.bmp"))
+
+    def __init__(self, window, x, y, scale=3, batch=None):
+        super(Sand, self).__init__(self.sand_image, x, y, batch=batch)
+
+
 class GameWindow(window.Window):
     """
     This is the game window
     """
+    sprites = []
 
     def __init__(self):
         super(GameWindow, self).__init__()
         clock.schedule_interval(self.update, 1.0/60)
-
+        
         self.quad_sprite = Quad(self, 100, 100, scale=3)
+        self.sprites.append(self.quad_sprite)
+
         app.run()
 
     def update(self, dt):
@@ -71,8 +85,10 @@ class GameWindow(window.Window):
         self.quad_sprite.update(dt)
 
     def on_draw(self):
+        glClearColor(1, 0.816, 0.451, 255)
         self.clear()
-        self.quad_sprite.draw()
+        for sprite in self.sprites:
+            sprite.draw()
 
     def on_key_press(self, symbol, modifiers):
         if (symbol == window.key.UP):
@@ -86,6 +102,7 @@ class GameWindow(window.Window):
 
     def on_key_release(self, symbol, modifiers):
         self.quad_sprite.move = Quad.STOP
+
 
 if __name__ == "__main__":
     sys.exit(GameWindow())
