@@ -53,6 +53,27 @@ class Quad(sprite.Sprite):
         self.image = self.image_grid[self.move]
 
 
+
+class Map(object):
+    """
+    Might as well hold the map in this.
+    """
+    sprites = []
+
+    def __init__(self, window, x, y):
+        for i in range(14):
+            self.sprites.append(Grid(window, 48*i, 0))
+
+
+    def draw(self):
+        for sprite in self.sprites:
+            sprite.draw()
+
+    def on_mouse_press(self, x, y):
+        self.sprites[x/48].change()
+        
+
+
 class Grid(sprite.Sprite):
     """
     This is a class for Sand
@@ -72,18 +93,12 @@ class GameWindow(window.Window):
     """
     This is the game window
     """
-    sprites = []
-
     def __init__(self):
         super(GameWindow, self).__init__()
         clock.schedule_interval(self.update, 1.0/60)
         
         self.quad_sprite = Quad(self, 100, 100, scale=3)
-        self.grid_sprite = Grid(self, 0, 0)
-        self.grid2_sprite = Grid(self, 48, 0)
-        self.sprites.append(self.grid_sprite)
-        self.sprites.append(self.grid2_sprite)
-        self.sprites.append(self.quad_sprite)
+        self.game_map = Map(self, 0, 0)
 
         app.run()
 
@@ -96,8 +111,8 @@ class GameWindow(window.Window):
     def on_draw(self):
         glClearColor(1, 0.816, 0.451, 255)
         self.clear()
-        for sprite in self.sprites:
-            sprite.draw()
+        self.quad_sprite.draw()
+        self.game_map.draw()
 
 
     key_map = {
@@ -117,9 +132,7 @@ class GameWindow(window.Window):
 
 
     def on_mouse_press(self, x, y, button, modifiers):
-        self.grid2_sprite.change()
-        print x
-        print y
+        self.game_map.on_mouse_press(x, y)
 
 
 if __name__ == "__main__":
