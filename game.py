@@ -58,20 +58,24 @@ class Map(object):
     """
     Might as well hold the map in this.
     """
-    sprites = []
+
+    TILE_SIZE=48
+
+    rows = []
 
     def __init__(self, window, x, y):
-        for i in range(14):
-            self.sprites.append(Grid(window, 48*i, 0))
-
+        for j in range(10):
+            self.rows.append ( [] )
+            for i in range(14):
+                self.rows[j].append(Grid(window, self.TILE_SIZE*i, 48*j))
 
     def draw(self):
-        for sprite in self.sprites:
-            sprite.draw()
+        for row in self.rows:
+            for sprite in row:
+                sprite.draw()
 
     def on_mouse_press(self, x, y):
-        self.sprites[x/48].change()
-        
+        self.rows[y/self.TILE_SIZE][x/self.TILE_SIZE].change()
 
 
 class Grid(sprite.Sprite):
@@ -111,8 +115,8 @@ class GameWindow(window.Window):
     def on_draw(self):
         glClearColor(1, 0.816, 0.451, 255)
         self.clear()
-        self.quad_sprite.draw()
         self.game_map.draw()
+        self.quad_sprite.draw()
 
 
     key_map = {
