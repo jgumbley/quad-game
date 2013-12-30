@@ -58,10 +58,14 @@ class Grid(sprite.Sprite):
     This is a class for Sand
     """
     sand_image = no_anti_alias(image.load("sand.bmp"))
+    mark_image = no_anti_alias(image.load("sand2.bmp"))
 
-    def __init__(self, window, x, y, scale=3, batch=None):
+    def __init__(self, window, x, y, batch=None):
         super(Grid, self).__init__(self.sand_image, x, y, batch=batch)
-        self.scale = scale
+        self.scale = 3
+
+    def change(self):
+        self.image = self.mark_image
 
 
 class GameWindow(window.Window):
@@ -75,8 +79,10 @@ class GameWindow(window.Window):
         clock.schedule_interval(self.update, 1.0/60)
         
         self.quad_sprite = Quad(self, 100, 100, scale=3)
-        self.grid_sprite = Grid(self, 100, 100, scale=3)
+        self.grid_sprite = Grid(self, 0, 0)
+        self.grid2_sprite = Grid(self, 48, 0)
         self.sprites.append(self.grid_sprite)
+        self.sprites.append(self.grid2_sprite)
         self.sprites.append(self.quad_sprite)
 
         app.run()
@@ -108,6 +114,12 @@ class GameWindow(window.Window):
 
     def on_key_release(self, symbol, modifiers):
         self.quad_sprite.move = Quad.STOP
+
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        self.grid2_sprite.change()
+        print x
+        print y
 
 
 if __name__ == "__main__":
