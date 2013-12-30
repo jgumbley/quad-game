@@ -53,14 +53,15 @@ class Quad(sprite.Sprite):
         self.image = self.image_grid[self.move]
 
 
-class Sand(sprite.Sprite):
+class Grid(sprite.Sprite):
     """
     This is a class for Sand
     """
     sand_image = no_anti_alias(image.load("sand.bmp"))
 
     def __init__(self, window, x, y, scale=3, batch=None):
-        super(Sand, self).__init__(self.sand_image, x, y, batch=batch)
+        super(Grid, self).__init__(self.sand_image, x, y, batch=batch)
+        self.scale = scale
 
 
 class GameWindow(window.Window):
@@ -74,6 +75,8 @@ class GameWindow(window.Window):
         clock.schedule_interval(self.update, 1.0/60)
         
         self.quad_sprite = Quad(self, 100, 100, scale=3)
+        self.grid_sprite = Grid(self, 100, 100, scale=3)
+        self.sprites.append(self.grid_sprite)
         self.sprites.append(self.quad_sprite)
 
         app.run()
@@ -90,15 +93,18 @@ class GameWindow(window.Window):
         for sprite in self.sprites:
             sprite.draw()
 
+
+    key_map = {
+        window.key.UP       : Quad.UP,
+        window.key.DOWN     : Quad.DOWN,
+        window.key.LEFT     : Quad.LEFT,
+        window.key.RIGHT    : Quad.RIGHT,
+    }
+
     def on_key_press(self, symbol, modifiers):
-        if (symbol == window.key.UP):
-            self.quad_sprite.move = Quad.UP
-        elif (symbol == window.key.DOWN):
-            self.quad_sprite.move = Quad.DOWN
-        elif (symbol == window.key.LEFT):
-            self.quad_sprite.move = Quad.LEFT
-        elif (symbol == window.key.RIGHT):
-            self.quad_sprite.move = Quad.RIGHT
+        if symbol in self.key_map.keys():
+            self.quad_sprite.move = self.key_map[symbol]
+
 
     def on_key_release(self, symbol, modifiers):
         self.quad_sprite.move = Quad.STOP
