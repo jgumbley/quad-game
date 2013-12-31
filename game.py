@@ -1,5 +1,12 @@
 import sys
-from pyglet import image, sprite, window, app, clock
+from pyglet import ( 
+    image, 
+    sprite, 
+    window, 
+    app, 
+    clock,
+    text
+)
 from pyglet.gl import (
     glClearColor,
     glTexParameteri,
@@ -23,7 +30,6 @@ class Quad(sprite.Sprite):
     """
     sprite_sheet = no_anti_alias(image.load('quad.png'))
 
-    STOP = 7
     UP = 2
     RIGHT_UP = 1
     RIGHT = 0
@@ -46,7 +52,6 @@ class Quad(sprite.Sprite):
         self.move = self.UP
 
     def update(self, dt):
-        self.move = self.STOP
         if (self.x < self.mx and self.y < self.my):
             self.x += self.SPEED
             self.y += self.SPEED
@@ -79,12 +84,6 @@ class Quad(sprite.Sprite):
 
 
     def on_mouse_press(self, x, y):
-        if (self.x < x):
-            self.move_to(x, y)
-        elif (self.y < self.my):
-            self.y += self.SPEED * dt
-            self.move = self.UP
- 
         self.move_to(x, y)
 
     def move_to(self, mx, my):
@@ -130,15 +129,17 @@ class Grid(sprite.Sprite):
     def change(self):
         self.image = self.mark_image
 
+label = text.Label('Hello, world',
+                      font_name='Geneva',
+                      font_size=8,
+                      x=5, y=10,
+                      anchor_x='left', anchor_y='center')
 
 class GameWindow(window.Window):
     """
     This is the game window
     """
     TILE_SIZE = 48
-
-    updates = 0
-    draws = 0
 
     def __init__(self):
         super(GameWindow, self).__init__()
@@ -156,20 +157,18 @@ class GameWindow(window.Window):
 #        for i in range(1000000):
 #            a = 23 / 1000
         self.quad_sprite.update(dt)
-        self.updates+=1
-        print "updates: %s draws: %s" % (self.updates, self.draws)
+        label.text = "hello"
 
     def on_draw(self):
         glClearColor(1, 0.816, 0.451, 255)
         self.clear()
         self.game_map.draw()
         self.quad_sprite.draw()
-        self.draws += 1
+        label.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
         tile_y = y/self.TILE_SIZE
         tile_x = x/self.TILE_SIZE
-        #self.game_map.on_mouse_press(tile_x, tile_y)
         self.quad_sprite.on_mouse_press(tile_x, tile_y)
 
 
