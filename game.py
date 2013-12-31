@@ -25,9 +25,13 @@ class Quad(sprite.Sprite):
 
     STOP = 7
     UP = 2
-    DOWN = 6
-    LEFT = 4
+    RIGHT_UP = 1
     RIGHT = 0
+    RIGHT_DOWN = 7
+    DOWN = 6
+    LEFT_DOWN = 5
+    LEFT = 4
+    LEFT_UP = 3
 
     SPEED = 6
 
@@ -43,7 +47,23 @@ class Quad(sprite.Sprite):
 
     def update(self, dt):
         self.move = self.STOP
-        if (self.x < self.mx):
+        if (self.x < self.mx and self.y < self.my):
+            self.x += self.SPEED
+            self.y += self.SPEED
+            self.move = self.RIGHT_UP
+        elif (self.x > self.mx and self.y > self.my):
+            self.x -= self.SPEED
+            self.y -= self.SPEED
+            self.move = self.LEFT_DOWN
+        elif (self.x < self.mx and self.y > self.my):
+            self.x += self.SPEED
+            self.y -= self.SPEED
+            self.move = self.RIGHT_DOWN
+        elif (self.x > self.mx and self.y < self.my):
+            self.x -= self.SPEED
+            self.y += self.SPEED
+            self.move = self.LEFT_UP
+        elif (self.x < self.mx):
             self.x += self.SPEED
             self.move = self.RIGHT
         elif (self.y < self.my):
