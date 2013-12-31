@@ -29,7 +29,7 @@ class Quad(sprite.Sprite):
     LEFT = 4
     RIGHT = 0
 
-    SPEED = 48*2
+    SPEED = 6
 
     def __init__(self, window, x, y, scale=1):
         self.image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
@@ -42,22 +42,19 @@ class Quad(sprite.Sprite):
         self.move = self.UP
 
     def update(self, dt):
-        if (True):
-            self.move = self.STOP
+        self.move = self.STOP
         if (self.x < self.mx):
-            self.x += int(self.SPEED * dt)
+            self.x += self.SPEED
             self.move = self.RIGHT
         elif (self.y < self.my):
-            self.y += int(self.SPEED * dt)
+            self.y += self.SPEED
             self.move = self.UP
         elif (self.x > self.mx):
-            self.x -= int(self.SPEED * dt)
+            self.x -= self.SPEED
             self.move = self.LEFT
         elif (self.y > self.my):
-            self.y -= int(self.SPEED * dt)
+            self.y -= self.SPEED
             self.move = self.DOWN
-        print dt
-        print self.x
         self.image = self.image_grid[self.move]
 
 
@@ -73,8 +70,6 @@ class Quad(sprite.Sprite):
     def move_to(self, mx, my):
         self.mx = mx*48
         self.my = my*48
-
-
 
 
 class Map(object):
@@ -122,6 +117,9 @@ class GameWindow(window.Window):
     """
     TILE_SIZE = 48
 
+    updates = 0
+    draws = 0
+
     def __init__(self):
         super(GameWindow, self).__init__()
         clock.schedule_interval(self.on_update, 1.0/60)
@@ -135,13 +133,18 @@ class GameWindow(window.Window):
         """
         This is to update the game, not the drawing of the game
         """
+#        for i in range(1000000):
+#            a = 23 / 1000
         self.quad_sprite.update(dt)
+        self.updates+=1
+        print "updates: %s draws: %s" % (self.updates, self.draws)
 
     def on_draw(self):
         glClearColor(1, 0.816, 0.451, 255)
         self.clear()
         self.game_map.draw()
         self.quad_sprite.draw()
+        self.draws += 1
 
     def on_mouse_press(self, x, y, button, modifiers):
         tile_y = y/self.TILE_SIZE
