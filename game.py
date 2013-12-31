@@ -45,8 +45,10 @@ class Quad(sprite.Sprite):
         if (self.x < self.mx):
             self.x += self.SPEED * dt
             self.move = self.RIGHT
+        elif (self.y < self.my):
+            self.y += self.SPEED * dt
+            self.move = self.UP
         self.image = self.image_grid[self.move]
-        print self.x
 
 #        if (self.move == self.STOP):
 #            return
@@ -114,7 +116,7 @@ class GameWindow(window.Window):
         clock.schedule_interval(self.update, 1.0/60)
         
         self.quad_sprite = Quad(self, 100, 100, scale=3)
-        self.quad_sprite.move_to(400,100)
+        self.quad_sprite.move_to(200,200)
 
         self.game_map = Map(self, 0, 0)
 
