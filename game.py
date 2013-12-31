@@ -29,7 +29,7 @@ class Quad(sprite.Sprite):
     LEFT = 4
     RIGHT = 0
 
-    SPEED = 100
+    SPEED = 48*2
 
     def __init__(self, window, x, y, scale=1):
         self.image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
@@ -41,30 +41,34 @@ class Quad(sprite.Sprite):
 
     def update(self, dt):
         if (self.x < self.mx):
-            self.x += self.SPEED * dt
+            self.x += int(self.SPEED * dt)
             self.move = self.RIGHT
+        elif (self.y < self.my):
+            self.y += int(self.SPEED * dt)
+            self.move = self.UP
+        elif (self.x > self.mx):
+            self.x -= int(self.SPEED * dt)
+            self.move = self.LEFT
+        elif (self.y > self.my):
+            self.y -= int(self.SPEED * dt)
+            self.move = self.DOWN
+        print dt
+        print self.x
+        self.image = self.image_grid[self.move]
+
+
+    def on_mouse_press(self, x, y):
+        if (self.x < x):
+            self.move_to(x, y)
         elif (self.y < self.my):
             self.y += self.SPEED * dt
             self.move = self.UP
-        self.image = self.image_grid[self.move]
-
-#        if (self.move == self.STOP):
-#            return
-#        elif (self.move == self.UP):
-#            self.y += self.SPEED * dt
-#        elif (self.move == self.DOWN):
-#            self.y -= self.SPEED * dt
-#        elif (self.move == self.LEFT):
-#            self.x -= self.SPEED * dt
-#        elif (self.move == self.RIGHT):
-#            self.x += self.SPEED * dt
-
-    def on_mouse_press(self, x, y):
+ 
         self.move_to(x, y)
 
     def move_to(self, mx, my):
-        self.mx = mx
-        self.my = my
+        self.mx = mx*48
+        self.my = my*48
 
 
 
@@ -90,7 +94,7 @@ class Map(object):
                 sprite.draw()
 
     def on_mouse_press(self, x, y):
-        self.rows[y/self.TILE_SIZE][x/self.TILE_SIZE].change()
+        self.rows[y][x].change()
 
 
 class Grid(sprite.Sprite):
@@ -112,16 +116,18 @@ class GameWindow(window.Window):
     """
     This is the game window
     """
+    TILE_SIZE = 48
+
     def __init__(self):
         super(GameWindow, self).__init__()
-        clock.schedule_interval(self.update, 1.0/60)
+        clock.schedule_interval(self.on_update, 1.0/60)
         
         self.quad_sprite = Quad(self, 100, 100, scale=3)
         self.game_map = Map(self, 0, 0)
 
         app.run()
 
-    def update(self, dt):
+    def on_update(self, dt):
         """
         This is to update the game, not the drawing of the game
         """
@@ -134,8 +140,10 @@ class GameWindow(window.Window):
         self.quad_sprite.draw()
 
     def on_mouse_press(self, x, y, button, modifiers):
-        self.game_map.on_mouse_press(x, y)
-        self.quad_sprite.on_mouse_press(x, y)
+        tile_y = y/self.TILE_SIZE
+        tile_x = x/self.TILE_SIZE
+        self.game_map.on_mouse_press(tile_x, tile_y)
+        self.quad_sprite.on_mouse_press(tile_x, tile_y)
 
 
 if __name__ == "__main__":
