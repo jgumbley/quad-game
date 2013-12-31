@@ -23,7 +23,7 @@ class Quad(sprite.Sprite):
     """
     sprite_sheet = no_anti_alias(image.load('quad.png'))
 
-    STOP = 9
+    STOP = 7
     UP = 2
     DOWN = 6
     LEFT = 4
@@ -33,13 +33,17 @@ class Quad(sprite.Sprite):
 
     def __init__(self, window, x, y, scale=1):
         self.image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
-        super(Quad, self).__init__(self.image_grid[5], x, y, batch=None)
+        tile_x = x*48
+        tile_y = y*48
+        super(Quad, self).__init__(self.image_grid[5], tile_x, tile_y, batch=None)
         self.scale = scale
-        self.mx = x
-        self.my = y
+        self.mx = tile_x
+        self.my = tile_y 
         self.move = self.UP
 
     def update(self, dt):
+        if (True):
+            self.move = self.STOP
         if (self.x < self.mx):
             self.x += int(self.SPEED * dt)
             self.move = self.RIGHT
@@ -122,7 +126,7 @@ class GameWindow(window.Window):
         super(GameWindow, self).__init__()
         clock.schedule_interval(self.on_update, 1.0/60)
         
-        self.quad_sprite = Quad(self, 100, 100, scale=3)
+        self.quad_sprite = Quad(self, 1, 1, scale=3)
         self.game_map = Map(self, 0, 0)
 
         app.run()
@@ -142,7 +146,7 @@ class GameWindow(window.Window):
     def on_mouse_press(self, x, y, button, modifiers):
         tile_y = y/self.TILE_SIZE
         tile_x = x/self.TILE_SIZE
-        self.game_map.on_mouse_press(tile_x, tile_y)
+        #self.game_map.on_mouse_press(tile_x, tile_y)
         self.quad_sprite.on_mouse_press(tile_x, tile_y)
 
 
