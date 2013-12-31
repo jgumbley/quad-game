@@ -29,6 +29,8 @@ class Quad(sprite.Sprite):
     LEFT = 4
     RIGHT = 0
 
+    SPEED = 100
+
     def __init__(self, window, x, y, scale=1):
         self.image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
         super(Quad, self).__init__(self.image_grid[5], x, y, batch=None)
@@ -40,17 +42,27 @@ class Quad(sprite.Sprite):
     def update(self, dt):
         self.py = self.y
         self.px = self.x
-        if (self.move == self.STOP):
-            return
-        elif (self.move == self.UP):
-            self.y += 100 * dt
-        elif (self.move == self.DOWN):
-            self.y -= 100 * dt
-        elif (self.move == self.LEFT):
-            self.x -= 100 * dt
-        elif (self.move == self.RIGHT):
-            self.x += 100 * dt
+        if (self.x < self.mx):
+            self.x += self.SPEED * dt
+            self.move = self.RIGHT
         self.image = self.image_grid[self.move]
+        print self.x
+
+#        if (self.move == self.STOP):
+#            return
+#        elif (self.move == self.UP):
+#            self.y += self.SPEED * dt
+#        elif (self.move == self.DOWN):
+#            self.y -= self.SPEED * dt
+#        elif (self.move == self.LEFT):
+#            self.x -= self.SPEED * dt
+#        elif (self.move == self.RIGHT):
+#            self.x += self.SPEED * dt
+
+    def move_to(self, mx, my):
+        self.mx = mx
+        self.my = my
+
 
 
 
@@ -102,6 +114,8 @@ class GameWindow(window.Window):
         clock.schedule_interval(self.update, 1.0/60)
         
         self.quad_sprite = Quad(self, 100, 100, scale=3)
+        self.quad_sprite.move_to(400,100)
+
         self.game_map = Map(self, 0, 0)
 
         app.run()
