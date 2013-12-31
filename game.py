@@ -35,13 +35,11 @@ class Quad(sprite.Sprite):
         self.image_grid = image.ImageGrid(self.sprite_sheet, 1, 8)
         super(Quad, self).__init__(self.image_grid[5], x, y, batch=None)
         self.scale = scale
-        self.px = x
-        self.py = y
-        self.move = self.STOP
+        self.mx = x
+        self.my = y
+        self.move = self.UP
 
     def update(self, dt):
-        self.py = self.y
-        self.px = self.x
         if (self.x < self.mx):
             self.x += self.SPEED * dt
             self.move = self.RIGHT
@@ -60,6 +58,9 @@ class Quad(sprite.Sprite):
 #            self.x -= self.SPEED * dt
 #        elif (self.move == self.RIGHT):
 #            self.x += self.SPEED * dt
+
+    def on_mouse_press(self, x, y):
+        self.move_to(x, y)
 
     def move_to(self, mx, my):
         self.mx = mx
@@ -116,8 +117,6 @@ class GameWindow(window.Window):
         clock.schedule_interval(self.update, 1.0/60)
         
         self.quad_sprite = Quad(self, 100, 100, scale=3)
-        self.quad_sprite.move_to(200,200)
-
         self.game_map = Map(self, 0, 0)
 
         app.run()
@@ -134,25 +133,9 @@ class GameWindow(window.Window):
         self.game_map.draw()
         self.quad_sprite.draw()
 
-
-    key_map = {
-        window.key.UP       : Quad.UP,
-        window.key.DOWN     : Quad.DOWN,
-        window.key.LEFT     : Quad.LEFT,
-        window.key.RIGHT    : Quad.RIGHT,
-    }
-
-    def on_key_press(self, symbol, modifiers):
-        if symbol in self.key_map.keys():
-            self.quad_sprite.move = self.key_map[symbol]
-
-
-    def on_key_release(self, symbol, modifiers):
-        self.quad_sprite.move = Quad.STOP
-
-
     def on_mouse_press(self, x, y, button, modifiers):
         self.game_map.on_mouse_press(x, y)
+        self.quad_sprite.on_mouse_press(x, y)
 
 
 if __name__ == "__main__":
