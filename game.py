@@ -105,6 +105,8 @@ class Map(object):
             self.rows.append ( [] )
             for i in range(14):
                 self.rows[j].append(Grid(window, self.TILE_SIZE*i, 48*j))
+                if (i is 6):
+                    self.rows[j].append(Grid(window, self.TILE_SIZE*i, 48*j, wall=True))
 
     def draw(self):
         for row in self.rows:
@@ -121,10 +123,14 @@ class Grid(sprite.Sprite):
     """
     sand_image = no_anti_alias(image.load("sand.bmp"))
     mark_image = no_anti_alias(image.load("sand2.bmp"))
+    slab_image = no_anti_alias(image.load("slab.png"))
+    wall_image = no_anti_alias(image.load("wall08.bmp"))
 
-    def __init__(self, window, x, y, batch=None):
+    def __init__(self, window, x, y, batch=None, wall=False):
         super(Grid, self).__init__(self.sand_image, x, y, batch=batch)
         self.scale = 3
+        if wall:
+            self.image = self.wall_image
 
     def change(self):
         self.image = self.mark_image
@@ -157,7 +163,7 @@ class GameWindow(window.Window):
 #        for i in range(1000000):
 #            a = 23 / 1000
         self.quad_sprite.update(dt)
-        label.text = "hello"
+        label.text = "x: %s, y: %s" % (self.quad_sprite.x, self.quad_sprite.y)
 
     def on_draw(self):
         glClearColor(1, 0.816, 0.451, 255)
